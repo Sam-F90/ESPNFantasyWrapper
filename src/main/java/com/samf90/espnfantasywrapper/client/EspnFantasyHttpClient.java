@@ -14,8 +14,11 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EspnFantasyHttpClient implements EspnFantasyClient {
+    Map<Integer, Teams> allTeams = new HashMap<>();
     private final String BASE_URL = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/";
     private final int leagueId;
     private final HttpClient httpClient;
@@ -44,7 +47,8 @@ public class EspnFantasyHttpClient implements EspnFantasyClient {
             JsonNode boxScoreNode = objectMapper.readTree(response.body());
 
             JsonBoxScore jsonBoxScore = objectMapper.treeToValue(boxScoreNode, JsonBoxScore.class);
-            return BoxScoreMapper.mapBoxScore(jsonBoxScore);
+            Teams teams = getTeams(year);
+            return BoxScoreMapper.mapBoxScore(jsonBoxScore,year,week,teams);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -52,6 +56,9 @@ public class EspnFantasyHttpClient implements EspnFantasyClient {
 
     @Override
     public Teams getTeams(int year) {
+        if(allTeams.containsKey(year)){
+            return allTeams.get(year);
+        }
         String url = BASE_URL + year + "/segments/0/leagues/" + leagueId + "?view=mRoster&view=mTeam";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
