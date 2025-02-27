@@ -7,6 +7,7 @@ import java.util.List;
 public record BoxScoreMatchup(
     Team home,
     Team away,
+    String winningSide,
     Team winner,
     Team loser,
     float homeScore,

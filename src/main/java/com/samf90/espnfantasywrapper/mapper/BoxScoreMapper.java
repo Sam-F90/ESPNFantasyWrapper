@@ -23,6 +23,7 @@ public class BoxScoreMapper {
         return new BoxScoreMatchup(
                 teams.teamMap().get(jsonSchedule.home().teamId()),
                 teams.teamMap().get(jsonSchedule.away().teamId()),
+                jsonSchedule.winner(),
                 (jsonSchedule.winner().equals("HOME")) ? teams.teamMap().get(jsonSchedule.home().teamId()): teams.teamMap().get(jsonSchedule.away().teamId()),
                 (jsonSchedule.winner().equals(jsonSchedule.home().teamId())) ? teams.teamMap().get(jsonSchedule.away().teamId()): teams.teamMap().get(jsonSchedule.home().teamId()),
                 parseScore(jsonSchedule.home().totalPoints()),
